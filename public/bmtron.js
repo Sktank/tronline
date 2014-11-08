@@ -170,6 +170,7 @@ $(function() {
 				} else {
 					$('.win-text').html('Player ' + (player + 1) + ' Wins');
 				}
+				$('.findNewGameBtn').css('display', 'block');
 			}
 		} else {
 			$('.win-text').html('Tie');
@@ -258,8 +259,9 @@ $(function() {
     	$('.gameSidebar').css('display', 'none');
 
     	svg.selectAll("rect").remove();
-    	util.setMiddle('svg', '.gameInfoContainer');
-		$('.win-text').html('Searching')
+    	setGameInfoStyle('meta')
+		$('.win-text').html('Searching');
+
 
 		socket.emit('enterNormalGameQueue');
 	})

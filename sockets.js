@@ -21,6 +21,13 @@ module.exports = function(server, io) {
             maxValue = 9007199254740992;
 
         socket.on('enterNormalGameQueue', function() {
+            // take yourself out of any previous rooms
+            if (socket.room) {
+                socket.leave(socket.room);
+                delete socket.room;
+                delete socket.player;
+            }
+
             socket.matched = false;
             socket.queued = false;
             socket.matchingPool = matchmaking.matchingPool;

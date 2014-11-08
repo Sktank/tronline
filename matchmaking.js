@@ -76,7 +76,7 @@ var defaultState = {
     1 : {x: 59, y: 24, direction: 37, done: false}
 }
 
-defaultState = [[13,25,39,false],[60,25,37,false]];
+defaultState = [[13,24,39,false],[60,24,37,false]];
 
 var defaultGrid = new Array(blocksX);
 for (var i = 0; i < blocksX; i++) {
