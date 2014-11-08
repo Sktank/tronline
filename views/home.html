@@ -1,0 +1,46 @@
+{% extends './layout.html' %}
+
+<!-- {% block home-active %}class="active"{% endblock %} -->
+
+{% block content %}
+	<div class="tron">
+		<div class="tron-title-container">
+			<h1 class="tron-title">Tr<span style="color:rgb(31, 189, 183);">O</span>nline</h1>
+			<div class="btn tron-btn btn-block">Enter</div>
+		</div>
+		<div class="container game">
+			<div class="row">
+				<div class="col-md-3">
+					<div class="gameState"></div>
+					<table>
+						<tbody>
+							<tr>
+								<td class="playerColor"></td><td class="colorHolder"></td>
+							</tr>
+							<tr>
+								<td class="countDown"></td><td></td>
+							</tr>
+						</tbody>
+					</table>
+					<br>
+				</div>
+
+				<div class="col-md-9">
+					<div class="gridContainer">
+							<div class="player-won-container">
+								<h4 class="win-text"></h4>
+							</div>
+					</div>
+				</div>
+			</div>
+		</div>	
+	</div>
+{% endblock %}
+
+{% block js %}
+<!-- <script type="text/javascript" src="/movingnav.js"></script> -->
+<script type="text/javascript" src="/d3.js"></script>
+<script type="text/javascript" src="/socket.io/socket.io.js"></script>
+<script type="text/javascript" src="/utilities.js"></script>
+<script type="text/javascript" src="/bmtron.js"></script>
+{% endblock %}

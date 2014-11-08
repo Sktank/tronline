@@ -1,0 +1,156 @@
+.circle {
+	width: 50px;
+	height: 50px;
+	background-color: black;
+	border-radius: 100px;
+	position: absolute;
+	cursor: pointer;
+}
+
+.mc {
+	width: 10px;
+	height: 10px;
+	z-index: 2;
+	background-color: red;
+	border-radius: 100px;
+	position: absolute;
+}
+
+svg {
+        background: black;
+        border: 5px solid yellow;
+        border-radius: 12px;
+    }
+
+.container {
+	margin-top: 50px;
+}
+
+.colorHolder {
+	height: 22px;
+	width: 22px;
+	float: right;
+	border-radius: 20px;
+	margin-left: 15px;	
+}
+
+.playerColor {
+	float: left;
+}
+
+.game {
+	opacity: 0;
+	display: none;
+	margin-top: 15%;
+}
+
+#beginGame {
+	display: none;
+}
+
+body {
+	background-color: black;
+	background-image: url('tron.jpg');
+	background-size: cover;
+	color: yellow;
+}
+
+.tron {
+	position: absolute;
+	top: 0px;
+	left: 0px;
+	right: 0;
+	bottom: 0;
+	background-color: black;
+	background-image: url('tron.jpg');
+	background-size: cover;
+	color: yellow;
+	min-width: 1250px;
+	min-height: 780px;
+}
+
+.tron-title-container {
+	margin: auto;
+	padding-top: 250px;
+    width: 400px;
+    height: 100px;
+    font-family: 'Century Gothic', CenturyGothic, AppleGothic, sans-serif;
+	font-style: normal;
+	font-variant: normal;
+	font-weight: bold;
+}
+
+.tron-title {
+	text-align: center;
+	letter-spacing: 5px;
+	font-size: 60px;
+	opacity:0;
+	
+}
+
+.tron-btn {
+	transition: 0.4s all;
+	margin: auto;
+	border: 1px solid yellow;
+	margin-top: 35px;
+	font-size: 24px;
+	letter-spacing: 3px;
+	width: 50%;
+	opacity:0;
+}
+
+.tron-btn:hover {
+	color:rgb(31, 189, 183);
+	border-color: rgb(31, 189, 183);
+	width: 100%;
+}
+
+.shown {
+	margin-top: 50px;
+	opacity: 1;
+}
+
+.tron-btn-clicked {
+	transition: 0.5s all;
+	margin-top: 65px;
+	width: 0px !important;
+	font-size: 0;
+	opacity: 0;
+}
+
+.tron-btn-clicked-title {
+	transition: 0.5s all;
+	margin-top: 55px;
+	font-size:0;
+}
+
+.viewGame {
+	opacity: 1;
+	transition: 1s all;
+}
+
+.gridContainer {
+	position: relative;
+}
+
+.countDown {
+	font-size: 20px;
+	padding-top: 20px;
+}
+
+.player-won-container {
+	display: none;
+	opacity: 0;
+    height: 50px;
+    width: 250px;
+    border-radius: 25px;
+    border: 2px solid white;
+    background: rgb(112, 195, 210);
+    position: absolute;
+    transition: 1s all;
+}
+
+.win-text {
+	text-align: center;
+	color: white;
+}
