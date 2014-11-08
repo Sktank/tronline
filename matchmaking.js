@@ -2,7 +2,7 @@ var queue       = require('./queue.js'),
     websockets  = require('./server.js'),
     RBTree   = require('bintrees').RBTree;
 
-var COUNT_DOWN_TIME = 2;
+var COUNT_DOWN_TIME = 7;
 var gameState = {};
 
 var X = 0,
@@ -72,11 +72,11 @@ exports.updateDirection = function(room, player, direction) {
 
 
 var defaultState = {
-    0 : {x: 15, y: 25, direction: 39, done: false},
-    1 : {x: 60, y: 25, direction: 37, done: false}
+    0 : {x: 9, y: 24, direction: 39, done: false},
+    1 : {x: 59, y: 24, direction: 37, done: false}
 }
 
-defaultState = [[15,25,39,false],[60,25,37,false]];
+defaultState = [[13,25,39,false],[60,25,37,false]];
 
 var defaultGrid = new Array(blocksX);
 for (var i = 0; i < blocksX; i++) {
@@ -141,6 +141,13 @@ function step(roomName, AIs) {
         }, speed);
     } else {
         websockets.io.sockets.in(roomName).emit('won', livingPlayer);
+        gameState[roomName]["done"] = true;
+
+        // increment score here
+        if (livingPlayer) {
+            gameState[roomName]["score"][livingPlayer]++;
+        }
+
     }
 }
 
@@ -157,26 +164,7 @@ function tryNormalMatch(pool) {
             j;
         pool.numNormalRooms = pool.numNormalRooms + 1;
 
-        // set up an empty grid
-        var defaultGrid = new Array(blocksX);
-        for (i = 0; i < blocksX; i++) {
-            defaultGrid[i] = new Array(blocksY);
-            for (j = 0; j < blocksY; j++) {
-                defaultGrid[i][j] = 0;
-            }
-        }
-
-        // add obsticles to grid
-        for (i = 29; i < 47; i++) {
-            for (j = 14; j < 35; j++) {
-                defaultGrid[i][j] = 1;
-            }
-        }
-
-        // add grid to global list
-        gameState[room] = {};
-        gameState[room]["state"] = JSON.parse(JSON.stringify(defaultState));
-        gameState[room]["grid"] = defaultGrid;
+        createGameState(room);
 
         // send grid to players and start game
         var playerNum = 0;
@@ -188,12 +176,49 @@ function tryNormalMatch(pool) {
                 socket.player = playerNum;
                 socket.queued = false;
                 socket.matched = true;
-                socket.emit('start', defaultGrid, playerNum, room, gameState[room]["state"]);
+                socket.emit('start', gameState[room]["grid"], playerNum, room, gameState[room]["state"]);
                 playerNum++;
             }
         }
         startCountdown(room, COUNT_DOWN_TIME);
     }
+}
+
+exports.newGame = function(room) {
+    // check if room exists
+    if (gameState[room] == null || gameState[room]["done"] == false) {
+        return false;
+    }
+
+    // if it is not currently in a game, proceeeeed.
+    createGameState(room);
+    websockets.io.sockets.in(room).emit('startNewGame', gameState[room]["grid"], gameState[room]["state"]);
+    startCountdown(room, COUNT_DOWN_TIME);
+}
+
+function createGameState(room) {
+    // set up an empty grid
+        var defaultGrid = new Array(blocksX);
+        for (i = 0; i < blocksX; i++) {
+            defaultGrid[i] = new Array(blocksY);
+            for (j = 0; j < blocksY; j++) {
+                defaultGrid[i][j] = 0;
+            }
+        }
+
+        // add obsticles to grid
+        // for (i = 27; i < 47; i++) {
+        //     for (j = 14; j < 35; j++) {
+        //         defaultGrid[i][j] = 1;
+        //     }
+        // }
+
+        // add grid to global list
+        gameState[room] = {};
+        gameState[room]["state"] = JSON.parse(JSON.stringify(defaultState));
+        gameState[room]["grid"] = defaultGrid;
+        gameState[room]["done"] = false;
+        gameState[room]["score"] = [0,0];
 }
 
 function startCountdown(room, timeLeft) {

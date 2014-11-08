@@ -45,6 +45,10 @@ module.exports = function(server, io) {
             matchmaking.queueUser(socket);
         });
 
+        socket.on('newGame', function(room) {
+            matchmaking.newGame(room);
+        })
+
         socket.on('updateDirection', function(room, player, direction) {
             matchmaking.updateDirection(room, player, direction);
         });
@@ -59,8 +63,9 @@ module.exports = function(server, io) {
 
 
         socket.on('disconnect', function() {
-
-            if (socket.room && socket.player) {
+            console.log("disconnecting");
+            if (typeof socket.room != 'undefined' && typeof socket.player != 'undefined') {
+                console.log("player has a room and player number");
                 // tell other players that you left
                 socket.broadcast.to(socket.room).emit('playerLeft', socket.player);
                 socket.leave(socket.room);

@@ -8,7 +8,11 @@ $(function() {
     	myPlayer,
     	myRoom,
     	i,
-    	j;
+    	j,
+    	menuUp = false,
+    	winAlertTop = 15,
+    	score={'0':0, '1':0},
+    	playerLeft = false;
 
     var X = 0,
 	    Y = 1,
@@ -48,28 +52,30 @@ $(function() {
 	    }
     }
 
-
-	socket.on('start', function(grid, player, room, state) {
-		console.log("player: " + player);
-		console.log("room: " + room);
-		myPlayer = player;
-		myRoom = room;
-		loadGrid(grid);
-		$('.gameState').html('<h4>Game Found</h4>');
-		$('.playerColor').html('Player Color:');
-		$('.colorHolder').css('background-color', colorMap[player]);
-		$('#beginGame').css('display', 'inline');
-		updateGrid(state);
+    function moveGameInfoUp() {
+    	menuUp = true;
+    	// hide game info
+    	if (!playerLeft) {
+	    	$('.gameInfoContainer').css('display', 'none');
+    	}
+    	$('.player-won-container').css('width', '250px');
+    	// set it back to top
+    	util.setTopMiddle('svg', '.gameInfoContainer', winAlertTop);
 
 
-	    $(document).keydown(function(event) {
-	    	direction = event.keyCode;
-	    	if (direction === 37 || direction === 38 || direction === 39 || direction === 40) {
-		    	socket.emit('updateDirection', myRoom, myPlayer, direction);	
-	    	}
-	    });
+    }
 
-        function updateGrid(state) {
+    function setGameInfoStyle(style) {
+    	if (style == 'meta') {
+    		menuUp = false
+    		$('.player-won-container').css('background-color', 'rgb(112, 195, 210)');
+    		$('.player-won-container').css('opacity', '0.8');
+    		$('.win-text').css('color', 'white');
+    		util.setMiddle('svg', '.gameInfoContainer');
+    	}
+    }
+
+    function updateGrid(state) {
 	    	for (var player in state) {
 			  if (state.hasOwnProperty(player)) {
 			    if (!state[player][DONE]) {
@@ -91,6 +97,28 @@ $(function() {
 			}
 	    }
 
+
+	socket.on('start', function(grid, player, room, state) {
+		console.log("player: " + player);
+		console.log("room: " + room);
+		myPlayer = player;
+		myRoom = room;
+		loadGrid(grid);
+		$('.gameSidebar').css('display', 'inline');
+		$('.playerColor').html('Your Color:');
+		$('.colorHolder').css('background-color', colorMap[player]);
+		$('#beginGame').css('display', 'inline');
+		$('.findNewGameBtn').css('display', 'none');
+		updateGrid(state);
+
+
+	    $(document).keydown(function(event) {
+	    	direction = event.keyCode;
+	    	if (direction === 37 || direction === 38 || direction === 39 || direction === 40) {
+		    	socket.emit('updateDirection', myRoom, myPlayer, direction);	
+	    	}
+	    });
+
     	socket.on('step', function(state) {
 			updateGrid(state);
 		});
@@ -101,6 +129,7 @@ $(function() {
 		console.log("player " + player + " left");
 
 		// stop the game
+		playerLeft = true;
 
 		// display that the other player left
 
@@ -110,48 +139,78 @@ $(function() {
 	socket.on('won', function(player) {
 		console.log("player " + player + " won");
 
+		$('.gameInfoContainer').css('display', 'inline');
 		// Put it on the screen that the player won
-		$('.player-won-container').css('display', 'inline');
 
-		colorMap[player]
-		$('.player-won-container').css('background-color', colorMap[player]);
-		$('.win-text').css('color', colorMap[player]);
-		$('.win-text').html('Player ' + (player + 1) + ' Wins');
+
+		if (playerLeft) {
+			$('.win-text').html('Opponent Left');
+			// display button to join new game
+			$('.findNewGameBtn').css('display', 'block');
+			return;
+		}
+
+
+		if (player != null && !playerLeft) {
+			score[player]++;
+			console.log(score)
+			console.log('#score' + player)
+			console.log(score[player] + '')
+			$('#score' + player).html(score[player] + '');
+			$('.player-won-container').css('background-color', colorMap[player]);
+			// $('.win-text').css('color', colorMap[player]);
+			$('.win-text').html('');
+			if (score[player] < 5) {
+				setTimeout(function() {
+					socket.emit('newGame', myRoom);
+				}, 3000);
+			} else {
+				if (player == myPlayer) {
+					$('.win-text').html('You Win');
+				} else {
+					$('.win-text').html('Player ' + (player + 1) + ' Wins');
+				}
+			}
+		} else {
+			$('.win-text').html('Tie');
+			setTimeout(function() {
+				socket.emit('newGame', myRoom);
+			}, 3000);
+		}
+
 		setTimeout(function() {
 			$('.player-won-container').css('opacity', '0.8');
 		}, 0);
 
-		// wait 5 seconds
 
-		setTimeout(function() {
-			socket.emit('newGame', myPlayer, myRoom);
-		}, 5000);
+
+
+		// wait 5 seconds
 		
 
-		// $('.player-won-container').show('200');
+	});
 
-
-
-
-		// add to that players score
-
-		// if that player won, 
-
-		// after a certain amount of time, clear it from screen
-
-		// refresh grid
-
-		// start new countdown
-
+	socket.on('startNewGame', function(grid, state) {
+		// black out the current board
+		svg.selectAll("rect").remove();
+		loadGrid(grid);
+		updateGrid(state);
 	});
 
 	socket.on('countDown', function(time) {
+		setGameInfoStyle('meta')
 		if (time === 0) {
-			$('.countDown').html('Go!');
+			moveGameInfoUp()
+		} else if (time > 5) {
+			$('.player-won-container').css('width', '200px');
+			$('.win-text').html('Prepare for Battle');
 		} else {
-			$('.countDown').html('Starting in ' + time);
-		}
+			$('.player-won-container').css('width', '50px');
+			$('.win-text').html(time);
+		} 
 	});
+
+
 
 	$('.tron-title').animate({
 		'opacity': 1,
@@ -171,11 +230,14 @@ $(function() {
 				$('.game').css('display', 'block');
 				setTimeout(function() {
 					$('.game').addClass('viewGame');
-					$('.gameState').html('<h4>Looking For Game...</h4>')
-					var winAlertTop = 15;
-				    util.setTopMiddle('svg', '.player-won-container', winAlertTop);
+				    util.setMiddle('svg', '.gameInfoContainer');
+					$('.win-text').html('Searching')
 				    $( window ).resize(function() {
-				  		util.setTopMiddle('svg', '.player-won-container', winAlertTop);
+				    	if (menuUp) {
+					  		util.setTopMiddle('svg', '.gameInfoContainer', winAlertTop);
+				    	} else {
+				    		util.setMiddle('svg', '.gameInfoContainer');
+				    	}
 					});
 					socket.emit('enterNormalGameQueue');
 				}, 50);
@@ -183,6 +245,24 @@ $(function() {
 	}, 400);
 		
 	});
+
+	$('.findNewGameBtn').click(function() {
+		// reset game parameters
+		myPlayer = '';
+    	myRoom = '';
+    	menuUp = false;
+    	score = {'0':0, '1':0};
+    	playerLeft = false;
+
+    	// reset layout
+    	$('.gameSidebar').css('display', 'none');
+
+    	svg.selectAll("rect").remove();
+    	util.setMiddle('svg', '.gameInfoContainer');
+		$('.win-text').html('Searching')
+
+		socket.emit('enterNormalGameQueue');
+	})
 
 	// $('.gameState').html('<h4>Looking For Game...</h4>')
 	// socket.emit('enterNormalGameQueue');

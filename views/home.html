@@ -11,25 +11,40 @@
 		<div class="container game">
 			<div class="row">
 				<div class="col-md-3">
-					<div class="gameState"></div>
+					<div class="gameSidebar">
 					<table>
 						<tbody>
 							<tr>
 								<td class="playerColor"></td><td class="colorHolder"></td>
 							</tr>
+						</tbody>
+					</table>
+					<hr>
+					<table>
+						<tbody>
 							<tr>
-								<td class="countDown"></td><td></td>
+								<th>Player</th><th class="scoreCol">Score</th>
+							</tr>
+							<tr>
+								<td><div class="colorCircle" id="player0"></div></td><td class="scoreCol" id="score0">0</td>
+							</tr>
+							<tr>
+								<td><div class="colorCircle" id="player1"></div></td><td class="scoreCol" id="score1">0</td>
 							</tr>
 						</tbody>
 					</table>
 					<br>
+					<div class="btn findNewGameBtn btn-warning">Find New Opponent</div>
+				</div>
 				</div>
 
 				<div class="col-md-9">
 					<div class="gridContainer">
+						<div class="gameInfoContainer">
 							<div class="player-won-container">
 								<h4 class="win-text"></h4>
 							</div>
+						</div>
 					</div>
 				</div>
 			</div>

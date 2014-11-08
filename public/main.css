@@ -26,12 +26,30 @@ svg {
 	margin-top: 50px;
 }
 
+.gameSidebar {
+	display: none;
+}
+
 .colorHolder {
 	height: 22px;
 	width: 22px;
 	float: right;
 	border-radius: 20px;
 	margin-left: 15px;	
+}
+
+.colorCircle {
+	height: 22px;
+	width: 22px;
+	border-radius: 20px;
+}
+
+#player0 {
+	background-color: red;
+}
+
+#player1 {
+	background-color: green;
 }
 
 .playerColor {
@@ -138,19 +156,44 @@ body {
 	padding-top: 20px;
 }
 
+.gameInfoContainer {
+	visibility: hidden;
+	height: 45px;
+	width: 250px;
+	position: absolute;
+	transition: 1s all;
+}
+
 .player-won-container {
-	display: none;
-	opacity: 0;
-    height: 50px;
+	visibility: visible;
+	opacity: 0.8;
+    height: 45px;
     width: 250px;
-    border-radius: 25px;
+    border-radius: 12px;
     border: 2px solid white;
     background: rgb(112, 195, 210);
-    position: absolute;
+    margin: auto;
+    /*position: absolute;*/
     transition: 1s all;
 }
 
 .win-text {
 	text-align: center;
 	color: white;
+}
+
+.scoreCol {
+	padding-left: 50px;
+}
+
+td {
+	padding-bottom: 20px;
+}
+
+th {
+	padding-bottom: 10px;
+}
+
+.findNewGameBtn {
+	display: none;
 }
