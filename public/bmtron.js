@@ -57,6 +57,8 @@ $(function() {
     	// hide game info
     	if (!playerLeft) {
 	    	$('.gameInfoContainer').css('display', 'none');
+    	} else {
+    		$('.win-text').html('Opponent Left');
     	}
     	$('.player-won-container').css('width', '250px');
     	// set it back to top
@@ -109,6 +111,8 @@ $(function() {
 		$('.colorHolder').css('background-color', colorMap[player]);
 		$('#beginGame').css('display', 'inline');
 		$('.findNewGameBtn').css('display', 'none');
+		$('#score0').html('0');
+		$('#score1').html('0');
 		updateGrid(state);
 
 
@@ -120,7 +124,9 @@ $(function() {
 	    });
 
     	socket.on('step', function(state) {
-			updateGrid(state);
+    		if (!playerLeft) {
+    			updateGrid(state);
+    		}
 		});
 
 	});
@@ -139,16 +145,17 @@ $(function() {
 	socket.on('won', function(player) {
 		console.log("player " + player + " won");
 
-		$('.gameInfoContainer').css('display', 'inline');
-		// Put it on the screen that the player won
-
-
 		if (playerLeft) {
 			$('.win-text').html('Opponent Left');
 			// display button to join new game
 			$('.findNewGameBtn').css('display', 'block');
+			$('.gameInfoContainer').css('display', 'inline');
 			return;
 		}
+
+		$('.gameInfoContainer').css('display', 'inline');
+		// Put it on the screen that the player won
+
 
 
 		if (player != null && !playerLeft) {
