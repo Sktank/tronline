@@ -16,7 +16,7 @@ var GROUP_SIZE = 2;
 
 var width = 600,
     height = 400,
-    pixPerBlock = 8,
+    pixPerBlock = 4,
     blocksX = width / pixPerBlock,
     blocksY = height / pixPerBlock;
 
@@ -77,6 +77,7 @@ var defaultState = {
 }
 
 defaultState = [[13,24,39,false],[60,24,37,false]];
+defaultState = [[26,48,39,false],[120,48,37,false]];
 
 var defaultGrid = new Array(blocksX);
 for (var i = 0; i < blocksX; i++) {

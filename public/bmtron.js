@@ -2,7 +2,7 @@ var socket = io.connect();
 $(function() {
     var width = 600,
         height = 400,
-        pixPerBlock = 8,
+        pixPerBlock = 4,
     	blocksX = width / pixPerBlock,
     	blocksY = height / pixPerBlock,
     	myPlayer,
